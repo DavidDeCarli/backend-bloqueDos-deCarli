@@ -23,12 +23,12 @@ io.on('connection', async socket => {
     console.log('Nuevo cliente conectado!');
 
     // carga inicial de productos
-    socket.emit('productos', productosApi.listarAll());
+    socket.emit('productos', await productosApi.listarAll());
 
     // actualizacion de productos
-    socket.on('update', producto => {
-        productosApi.guardar(producto)
-        io.sockets.emit('productos', productosApi.listarAll());
+    socket.on('update', async producto => {
+        await productosApi.guardar(producto)
+        socket.emit('productos', await productosApi.listarAll());
     })
 
     // carga inicial de mensajes
@@ -38,7 +38,7 @@ io.on('connection', async socket => {
     socket.on('nuevoMensaje', async mensaje => {
         mensaje.fyh = new Date().toLocaleString()
         await mensajesApi.guardar(mensaje)
-        io.sockets.emit('mensajes', await mensajesApi.listarAll());
+        socket.emit('mensajes', await mensajesApi.listarAll());
     })
 });
 

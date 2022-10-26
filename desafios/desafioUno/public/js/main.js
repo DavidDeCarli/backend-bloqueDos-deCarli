@@ -25,6 +25,7 @@ function makeHtmlTable(productos) {
         .then(respuesta => respuesta.text())
         .then(plantilla => {
             const template = Handlebars.compile(plantilla);
+            console.log(productos)
             const html = template({ productos })
             return html
         })

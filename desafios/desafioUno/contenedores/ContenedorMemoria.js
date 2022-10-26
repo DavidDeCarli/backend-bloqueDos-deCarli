@@ -1,22 +1,32 @@
+const dbConfig = require('../db/config');
+const knex = require('knex')(dbConfig.mariaDB);
+
 class ContenedorMemoria {
     constructor() {
         this.elementos = []
         this.id = 0
     }
 
-    listar(id) {
-        const elem = this.elementos.find(elem => elem.id == id)
-        return elem || { error: `elemento no encontrado` }
+    async listar(id) {
+        const producto = await knex.from('productos').select('id', 'title', 'price', 'thumbnail').whereRaw('id = ??', [id]);
+        return producto || { error: `elemento no encontrado` }
     }
 
-    listarAll() {
-        return [...this.elementos]
+    async listarAll() {
+        const productos = await knex.from('productos').select('id', 'title', 'price', 'thumbnail');
+        const productosRows = productos.map(row => ({ ...row }));
+        this.elementos = productosRows;
+        return productosRows;
     }
 
-    guardar(elem) {
-        const newElem = { ...elem, id: ++this.id }
-        this.elementos.push(newElem)
-        return newElem
+    async guardar(elem) {
+        const productoInsert = await knex.from('productos').insert({
+            id: this.elementos.length,
+            title: elem.title,
+            price: elem.price,
+            thumbnail: elem.thumbnail
+        });
+        return productoInsert
     }
 
     actualizar(elem, id) {

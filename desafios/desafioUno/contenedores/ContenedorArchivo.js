@@ -1,3 +1,5 @@
+const dbConfig = require('../db/config');
+const knex = require('knex')(dbConfig.sqlite);
 const { promises: fs } = require('fs')
 
 class ContenedorArchivo {
@@ -14,29 +16,21 @@ class ContenedorArchivo {
 
     async listarAll() {
         try {
-            const objs = await fs.readFile(this.ruta, 'utf-8')
-            return JSON.parse(objs)
+            const mensajes = await knex.from('mensajes').select('id', 'autor', 'texto', 'fyh');
+            const mensajesRows = mensajes.map(row => ({ ...row }));
+            return mensajesRows
         } catch (error) {
             return []
         }
     }
 
     async guardar(obj) {
-        const objs = await this.listarAll()
-
-        let newId
-        if (objs.length == 0) {
-            newId = 1
-        } else {
-            newId = objs[objs.length - 1].id + 1
-        }
-
-        const newObj = { ...obj, id: newId }
-        objs.push(newObj)
-
         try {
-            await fs.writeFile(this.ruta, JSON.stringify(objs, null, 2))
-            return newId
+            await knex.from('mensajes').insert({
+                autor: obj.autor,
+                texto: obj.texto,
+                fyh: obj.fyh
+            });
         } catch (error) {
             throw new Error(`Error al guardar: ${error}`)
         }
