@@ -2,10 +2,10 @@
   "name": "backend-decarli",
   "version": "1.0.0",
   "description": "<h1 align=\"center\">Hi 👋, I'm David De Carli</h1> <h3 align=\"center\">Full Stack development</h3>",
-  "main": "indexUno.js",
+  "main": "indexDos.js",
   "scripts": {
-    "start": "node indexUno.js",
-    "dev": "nodemon indexUno.js"
+    "start": "node indexDos.js",
+    "dev": "nodemon indexDos.js"
   },
   "repository": {
     "type": "git",
